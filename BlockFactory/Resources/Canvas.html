@@ -1,0 +1,1505 @@
+﻿<!doctype html>
+<html lang="ja-jp">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Blockly Demo: Blockly Developer Tools</title>
+    <style>
+/**
+ * @license
+ * Blockly Demos: Block Factory
+ *
+ * Copyright 2016 Google Inc.
+ * https://developers.google.com/blockly/
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+html, body {
+  height: 100%;
+  min-height: 375px;
+}
+
+body {
+  background-color: #fff;
+  font-family: sans-serif;
+  margin: 0 5px;
+  overflow: hidden;
+}
+
+h1 {
+  font-weight: normal;
+  font-size: 140%;
+}
+
+h3 {
+  margin-top: 5px;
+  margin-bottom: 0;
+}
+
+table {
+  border: none;
+  border-collapse: collapse;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+
+td {
+  vertical-align: top;
+  padding: 0;
+}
+
+p {
+  display: block;
+  -webkit-margin-before: 0em;
+  -webkit-margin-after: 0em;
+  -webkit-margin-start: 0px;
+  -webkit-margin-end: 0px;
+  padding: 5px 0px;
+}
+
+#factoryHeader {
+  display: table;
+  height: 10%;
+}
+
+#blockly {
+  position: absolute;
+}
+
+#blocklyMask {
+  background-color: #000;
+  cursor: not-allowed;
+  display: none;
+  position: fixed;
+  opacity: 0.2;
+  z-index: 9;
+}
+
+#preview {
+  position: absolute;
+}
+
+pre,
+#languageTA {
+  border: #ddd 1px solid;
+  margin-top: 0;
+  position: absolute;
+  overflow: scroll;
+}
+
+#languageTA {
+  display: none;
+  font: 10pt monospace;
+}
+
+.downloadButton {
+  padding: 5px;
+}
+
+.disabled {
+  color: #888;
+}
+
+button:disabled, .buttonStyle:disabled {
+  opacity: 0.6;
+}
+
+button>*, .buttonStyle>* {
+  opacity: 1;
+  vertical-align: text-bottom;
+}
+
+button, .buttonStyle {
+  border-radius: 4px;
+  border: 1px solid #ddd;
+  background-color: #eee;
+  color: #000;
+  padding: 10px;
+  margin: 10px 5px;
+  font-size: small;
+}
+
+.buttonStyle:hover:not(:disabled), button:hover:not(:disabled) {
+  box-shadow: 2px 2px 5px #888;
+}
+
+.buttonStyle:hover:not(:disabled)>*, button:hover:not(:disabled)>* {
+  opacity: 1;
+}
+
+#linkButton {
+  display: none;
+}
+
+#helpButton {
+  float: right;
+}
+
+#blockFactoryContent {
+  height: 85%;
+  width: 100%;
+  overflow: hidden;
+}
+
+#blockFactoryPreview {
+  height: 100%;
+  width: 100%;
+}
+
+#blockLibraryContainer {
+  vertical-align: bottom;
+}
+
+#blockLibraryControls {
+  text-align: right;
+  vertical-align: middle;
+}
+
+#previewContainer {
+  vertical-align: bottom;
+}
+
+#buttonContainer {
+  text-align: right;
+  vertical-align: middle;
+}
+
+#files {
+  position: absolute;
+  visibility: hidden;
+}
+
+.toolbox {
+  display: none;
+}
+
+#blocklyWorkspaceContainer {
+  width: 50%;
+}
+
+#workspaceFactoryContent {
+  clear: both;
+  display: none;
+  height: 90%;
+  overflow-x: hidden;
+  overflow-y: scroll;
+}
+
+/* Exporter */
+
+#blockLibraryExporter {
+  clear: both;
+  display: none;
+  height: 90%;
+  overflow-x: hidden;
+  overflow-y: scroll;
+}
+
+#exportSelector {
+  display: inline-block;
+  float: left;
+  height: 70%;
+  width: 30%;
+}
+
+#exportSettings {
+  float: left;
+  overflow: hidden;
+  padding-left: 16px;
+  width: 20%;
+}
+
+#selectedBlocksTextContainer {
+  max-height: 200px;
+  overflow-y: scroll;
+  padding-bottom: 2em;
+}
+
+::-webkit-scrollbar {
+  -webkit-appearance: none;
+  width: 7px;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 4px;
+  background-color: #ccc;
+  -webkit-box-shadow: 0 0 1px rgba(255,255,255,.5);
+}
+
+.subsettings {
+  margin: 0px 25px;
+}
+
+#exporterHiddenWorkspace {
+ display: none;
+}
+
+#exportPreview {
+  float: right;
+  height: 90%;
+  overflow: hidden;
+  width: 45%;
+}
+
+.exportPreviewTextArea {
+  display: block;
+  float: right;
+  height: 40%;
+  width: 100%;
+}
+
+#genStubs_textArea, #blockDefs_textArea {
+  display: block;
+  height: 80%;
+  margin-right: 20px;
+  max-height: 300px;
+  overflow: scroll;
+  position: static;
+}
+
+#blockDefs_label, #genStubs_label {
+  display: block;
+}
+
+#blockSelector {
+  background-color: #eee;
+  border: 1px solid lightgrey;
+  width: 80%;
+  height: 90%;
+  overflow-y: scroll;
+  position: relative;
+}
+
+/* Exporter Block Option */
+
+.blockOption {
+  background-color: #eee;
+  padding: 15px 20px;
+  width: 95%;
+}
+
+.blockOption_check_label {
+  position: relative;
+}
+
+.blockOption_check {
+  float: left;
+  padding: 4px;
+}
+
+.blockOption_label {
+  float: left;
+  max-width: inherit;
+  overflow-y: scroll;
+  word-wrap: break-word;
+}
+
+.blockOption_preview {
+  height: 100px;
+  padding-top: 10px;
+  width: 90%;
+}
+
+/* Block Library */
+
+#dropdownDiv_blockLib {
+  max-height: 65%;
+  overflow-y: scroll;
+}
+
+#button_blockLib {
+  border-color: darkgrey;
+  font-size: large;
+}
+
+.button_alert {
+  background-color: #fcc;
+  border-color: #f99;
+}
+
+.button_warn {
+  background-color: #aea;
+  border-color: #5d5;
+}
+
+/* Tabs */
+
+.tab {
+  float: left;
+  padding: 5px 19px;
+}
+
+.tab:hover:not(.tabon){
+  background-color: #e8e8e8;
+}
+
+.tab.tabon {
+  background-color: #ccc;
+}
+
+.tab.taboff {
+  cursor: pointer;
+}
+
+#tabContainer {
+  background-color: #f8f8f8;
+  border-top: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
+  display: table;
+  width: 100%;
+}
+
+/* Workspace Factory */
+
+section {
+  float: left;
+}
+
+aside {
+  float: right;
+}
+
+#categoryTable>table {
+  border: 1px solid #ccc;
+  border-bottom: none;
+  width: auto;
+}
+
+td.tabon {
+  background-color: #ccc;
+  border-bottom-color: #ccc;
+  padding: 5px 19px;
+}
+
+td.taboff {
+  cursor: pointer;
+  padding: 5px 19px;
+}
+
+td.taboff:hover {
+  background-color: #eee;
+}
+
+.large {
+  font-size: large;
+}
+
+.inputfile {
+  height: 0;
+  opacity: 0;
+  overflow: hidden;
+  position: absolute;
+  width: 0;
+  z-index: -1;
+}
+#wfactoryHeader {
+  height: 29%;
+  padding: 0.5%;
+}
+
+#workspaceTabs {
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+  display: table;
+  width: auto;
+}
+
+#toolbox_section {
+  height: 85%;
+  width: 60%;
+}
+
+#previewHelp {
+  padding: 10px;
+  width: 98%;
+}
+
+#toolbox_blocks {
+  height: 100%;
+  width: 100%;
+}
+
+#preview_blocks {
+  height: 80%;
+  padding: 10px;
+  width: 100%;
+}
+
+#createDiv {
+  height: 79%;
+  padding: 0.5%;
+  width: 60%;
+}
+
+#previewDiv {
+  border: 10px solid #eee;
+  height: 77%;
+  margin-right: 0.5%;
+  padding-bottom: 10px;
+  width: 35%;
+}
+
+#previewBorder {
+  border: 5px solid #ddd;
+  height: 100%;
+  padding-right: 20px;
+}
+
+.disabled {
+  background-color: white;
+  opacity: 0.5;
+}
+
+#toolbox_div {
+  display: table;
+  height: auto;
+  margin-right: 5%;
+  overflow: hidden;
+  width: 35%;
+}
+
+#preload_div {
+  display: table;
+  height: 75%;
+  margin-left: 2%;
+  margin-right: 2%;
+  max-height: 500px;
+  overflow: hidden;
+  overflow-y: scroll;
+  width: 30%;
+}
+
+#shadowBlockDropdown {
+  height: 15%;
+}
+
+#preloadHelp {
+  display: table-row;
+  height: 30%;
+}
+
+#workspace_options {
+  display: table-row;
+  margin-top: 2%;
+}
+
+#disable_div {
+  background-color: white;
+  height: 100%;
+  left: 0;
+  opacity: .5;
+  position: absolute;
+  top: 0;
+  width: 100%;
+  z-index: -1;  /* Start behind workspace */
+}
+
+#grid_options, #zoom_options, #maxBlockNumber_option {
+  padding-left: 15px;
+}
+
+#modalShadow {
+  display: none;
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: rgba(0, 0, 0, 0.05);
+  z-index: 100;
+}
+
+/* Rules for Closure popup color picker */
+.goog-palette {
+  outline: none;
+  cursor: default;
+}
+
+.goog-palette-cell {
+  height: 13px;
+  width: 15px;
+  margin: 0;
+  border: 0;
+  text-align: center;
+  vertical-align: middle;
+  border-right: 1px solid #000;
+  font-size: 1px;
+}
+
+.goog-palette-colorswatch {
+  border: 1px solid #000;
+  height: 13px;
+  position: relative;
+  width: 15px;
+}
+
+.goog-palette-cell-hover .goog-palette-colorswatch {
+  border: 1px solid #fff;
+}
+
+.goog-palette-cell-selected .goog-palette-colorswatch {
+  border: 1px solid #000;
+  color: #fff;
+}
+
+.goog-palette-table {
+  border: 1px solid #000;
+  border-collapse: collapse;
+}
+
+.goog-popupcolorpicker {
+  position: absolute;
+  z-index: 101;  /* On top of the modal Shadow. */
+}
+
+/* The container <div> - needed to position the dropdown content */
+.dropdown {
+  display: inline-block;
+}
+
+/* Dropdown Content (Hidden by Default) */
+.dropdown-content {
+  background-color: #fff;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,.2);
+  display: none;
+  min-width: 170px;
+  opacity: 1;
+  position: absolute;
+  z-index: 101;  /* On top of the modal Shadow. */
+}
+
+/* Links inside the dropdown */
+.dropdown-content a, .dropdown-content label {
+  color: black;
+  display: block;
+  font-size: small;
+  padding: 12px 16px;
+  text-decoration: none;
+}
+
+/* Change color  of dropdown links on hover. */
+.dropdown-content a:hover, .dropdown-content label:hover {
+  background-color: #EEE;
+}
+
+/* Change color of dropdown links on selected. */
+.dropdown-content-selected {
+  background-color: #DDD;
+}
+
+/* Show the dropdown menu */
+.show {
+  display: block;
+}
+
+.shadowBlock>.blocklyPath {
+  fill-opacity: .5;
+  stroke-opacity: .5;
+}
+
+.shadowBlock>.blocklyPathLight,
+.shadowBlock>.blocklyPathDark {
+  display: none;
+}
+    </style>
+    <script type="text/javascript">!function(){var q=null;window.PR_SHOULD_USE_CONTINUATION=!0;
+(function(){function S(a){function d(e){var b=e.charCodeAt(0);if(b!==92)return b;var a=e.charAt(1);return(b=r[a])?b:"0"<=a&&a<="7"?parseInt(e.substring(1),8):a==="u"||a==="x"?parseInt(e.substring(2),16):e.charCodeAt(1)}function g(e){if(e<32)return(e<16?"\\x0":"\\x")+e.toString(16);e=String.fromCharCode(e);return e==="\\"||e==="-"||e==="]"||e==="^"?"\\"+e:e}function b(e){var b=e.substring(1,e.length-1).match(/\\u[\dA-Fa-f]{4}|\\x[\dA-Fa-f]{2}|\\[0-3][0-7]{0,2}|\\[0-7]{1,2}|\\[\S\s]|[^\\]/g),e=[],a=
+b[0]==="^",c=["["];a&&c.push("^");for(var a=a?1:0,f=b.length;a<f;++a){var h=b[a];if(/\\[bdsw]/i.test(h))c.push(h);else{var h=d(h),l;a+2<f&&"-"===b[a+1]?(l=d(b[a+2]),a+=2):l=h;e.push([h,l]);l<65||h>122||(l<65||h>90||e.push([Math.max(65,h)|32,Math.min(l,90)|32]),l<97||h>122||e.push([Math.max(97,h)&-33,Math.min(l,122)&-33]))}}e.sort(function(e,a){return e[0]-a[0]||a[1]-e[1]});b=[];f=[];for(a=0;a<e.length;++a)h=e[a],h[0]<=f[1]+1?f[1]=Math.max(f[1],h[1]):b.push(f=h);for(a=0;a<b.length;++a)h=b[a],c.push(g(h[0])),
+h[1]>h[0]&&(h[1]+1>h[0]&&c.push("-"),c.push(g(h[1])));c.push("]");return c.join("")}function s(e){for(var a=e.source.match(/\[(?:[^\\\]]|\\[\S\s])*]|\\u[\dA-Fa-f]{4}|\\x[\dA-Fa-f]{2}|\\\d+|\\[^\dux]|\(\?[!:=]|[()^]|[^()[\\^]+/g),c=a.length,d=[],f=0,h=0;f<c;++f){var l=a[f];l==="("?++h:"\\"===l.charAt(0)&&(l=+l.substring(1))&&(l<=h?d[l]=-1:a[f]=g(l))}for(f=1;f<d.length;++f)-1===d[f]&&(d[f]=++x);for(h=f=0;f<c;++f)l=a[f],l==="("?(++h,d[h]||(a[f]="(?:")):"\\"===l.charAt(0)&&(l=+l.substring(1))&&l<=h&&
+(a[f]="\\"+d[l]);for(f=0;f<c;++f)"^"===a[f]&&"^"!==a[f+1]&&(a[f]="");if(e.ignoreCase&&m)for(f=0;f<c;++f)l=a[f],e=l.charAt(0),l.length>=2&&e==="["?a[f]=b(l):e!=="\\"&&(a[f]=l.replace(/[A-Za-z]/g,function(a){a=a.charCodeAt(0);return"["+String.fromCharCode(a&-33,a|32)+"]"}));return a.join("")}for(var x=0,m=!1,j=!1,k=0,c=a.length;k<c;++k){var i=a[k];if(i.ignoreCase)j=!0;else if(/[a-z]/i.test(i.source.replace(/\\u[\da-f]{4}|\\x[\da-f]{2}|\\[^UXux]/gi,""))){m=!0;j=!1;break}}for(var r={b:8,t:9,n:10,v:11,
+f:12,r:13},n=[],k=0,c=a.length;k<c;++k){i=a[k];if(i.global||i.multiline)throw Error(""+i);n.push("(?:"+s(i)+")")}return RegExp(n.join("|"),j?"gi":"g")}function T(a,d){function g(a){var c=a.nodeType;if(c==1){if(!b.test(a.className)){for(c=a.firstChild;c;c=c.nextSibling)g(c);c=a.nodeName.toLowerCase();if("br"===c||"li"===c)s[j]="\n",m[j<<1]=x++,m[j++<<1|1]=a}}else if(c==3||c==4)c=a.nodeValue,c.length&&(c=d?c.replace(/\r\n?/g,"\n"):c.replace(/[\t\n\r ]+/g," "),s[j]=c,m[j<<1]=x,x+=c.length,m[j++<<1|1]=
+a)}var b=/(?:^|\s)nocode(?:\s|$)/,s=[],x=0,m=[],j=0;g(a);return{a:s.join("").replace(/\n$/,""),d:m}}function H(a,d,g,b){d&&(a={a:d,e:a},g(a),b.push.apply(b,a.g))}function U(a){for(var d=void 0,g=a.firstChild;g;g=g.nextSibling)var b=g.nodeType,d=b===1?d?a:g:b===3?V.test(g.nodeValue)?a:d:d;return d===a?void 0:d}function C(a,d){function g(a){for(var j=a.e,k=[j,"pln"],c=0,i=a.a.match(s)||[],r={},n=0,e=i.length;n<e;++n){var z=i[n],w=r[z],t=void 0,f;if(typeof w==="string")f=!1;else{var h=b[z.charAt(0)];
+if(h)t=z.match(h[1]),w=h[0];else{for(f=0;f<x;++f)if(h=d[f],t=z.match(h[1])){w=h[0];break}t||(w="pln")}if((f=w.length>=5&&"lang-"===w.substring(0,5))&&!(t&&typeof t[1]==="string"))f=!1,w="src";f||(r[z]=w)}h=c;c+=z.length;if(f){f=t[1];var l=z.indexOf(f),B=l+f.length;t[2]&&(B=z.length-t[2].length,l=B-f.length);w=w.substring(5);H(j+h,z.substring(0,l),g,k);H(j+h+l,f,I(w,f),k);H(j+h+B,z.substring(B),g,k)}else k.push(j+h,w)}a.g=k}var b={},s;(function(){for(var g=a.concat(d),j=[],k={},c=0,i=g.length;c<i;++c){var r=
+g[c],n=r[3];if(n)for(var e=n.length;--e>=0;)b[n.charAt(e)]=r;r=r[1];n=""+r;k.hasOwnProperty(n)||(j.push(r),k[n]=q)}j.push(/[\S\s]/);s=S(j)})();var x=d.length;return g}function v(a){var d=[],g=[];a.tripleQuotedStrings?d.push(["str",/^(?:'''(?:[^'\\]|\\[\S\s]|''?(?=[^']))*(?:'''|$)|"""(?:[^"\\]|\\[\S\s]|""?(?=[^"]))*(?:"""|$)|'(?:[^'\\]|\\[\S\s])*(?:'|$)|"(?:[^"\\]|\\[\S\s])*(?:"|$))/,q,"'\""]):a.multiLineStrings?d.push(["str",/^(?:'(?:[^'\\]|\\[\S\s])*(?:'|$)|"(?:[^"\\]|\\[\S\s])*(?:"|$)|`(?:[^\\`]|\\[\S\s])*(?:`|$))/,
+q,"'\"`"]):d.push(["str",/^(?:'(?:[^\n\r'\\]|\\.)*(?:'|$)|"(?:[^\n\r"\\]|\\.)*(?:"|$))/,q,"\"'"]);a.verbatimStrings&&g.push(["str",/^@"(?:[^"]|"")*(?:"|$)/,q]);var b=a.hashComments;b&&(a.cStyleComments?(b>1?d.push(["com",/^#(?:##(?:[^#]|#(?!##))*(?:###|$)|.*)/,q,"#"]):d.push(["com",/^#(?:(?:define|e(?:l|nd)if|else|error|ifn?def|include|line|pragma|undef|warning)\b|[^\n\r]*)/,q,"#"]),g.push(["str",/^<(?:(?:(?:\.\.\/)*|\/?)(?:[\w-]+(?:\/[\w-]+)+)?[\w-]+\.h(?:h|pp|\+\+)?|[a-z]\w*)>/,q])):d.push(["com",
+/^#[^\n\r]*/,q,"#"]));a.cStyleComments&&(g.push(["com",/^\/\/[^\n\r]*/,q]),g.push(["com",/^\/\*[\S\s]*?(?:\*\/|$)/,q]));if(b=a.regexLiterals){var s=(b=b>1?"":"\n\r")?".":"[\\S\\s]";g.push(["lang-regex",RegExp("^(?:^^\\.?|[+-]|[!=]=?=?|\\#|%=?|&&?=?|\\(|\\*=?|[+\\-]=|->|\\/=?|::?|<<?=?|>>?>?=?|,|;|\\?|@|\\[|~|{|\\^\\^?=?|\\|\\|?=?|break|case|continue|delete|do|else|finally|instanceof|return|throw|try|typeof)\\s*("+("/(?=[^/*"+b+"])(?:[^/\\x5B\\x5C"+b+"]|\\x5C"+s+"|\\x5B(?:[^\\x5C\\x5D"+b+"]|\\x5C"+
+s+")*(?:\\x5D|$))+/")+")")])}(b=a.types)&&g.push(["typ",b]);b=(""+a.keywords).replace(/^ | $/g,"");b.length&&g.push(["kwd",RegExp("^(?:"+b.replace(/[\s,]+/g,"|")+")\\b"),q]);d.push(["pln",/^\s+/,q," \r\n\t\u00a0"]);b="^.[^\\s\\w.$@'\"`/\\\\]*";a.regexLiterals&&(b+="(?!s*/)");g.push(["lit",/^@[$_a-z][\w$@]*/i,q],["typ",/^(?:[@_]?[A-Z]+[a-z][\w$@]*|\w+_t\b)/,q],["pln",/^[$_a-z][\w$@]*/i,q],["lit",/^(?:0x[\da-f]+|(?:\d(?:_\d+)*\d*(?:\.\d*)?|\.\d\+)(?:e[+-]?\d+)?)[a-z]*/i,q,"0123456789"],["pln",/^\\[\S\s]?/,
+q],["pun",RegExp(b),q]);return C(d,g)}function J(a,d,g){function b(a){var c=a.nodeType;if(c==1&&!x.test(a.className))if("br"===a.nodeName)s(a),a.parentNode&&a.parentNode.removeChild(a);else for(a=a.firstChild;a;a=a.nextSibling)b(a);else if((c==3||c==4)&&g){var d=a.nodeValue,i=d.match(m);if(i)c=d.substring(0,i.index),a.nodeValue=c,(d=d.substring(i.index+i[0].length))&&a.parentNode.insertBefore(j.createTextNode(d),a.nextSibling),s(a),c||a.parentNode.removeChild(a)}}function s(a){function b(a,c){var d=
+c?a.cloneNode(!1):a,e=a.parentNode;if(e){var e=b(e,1),g=a.nextSibling;e.appendChild(d);for(var i=g;i;i=g)g=i.nextSibling,e.appendChild(i)}return d}for(;!a.nextSibling;)if(a=a.parentNode,!a)return;for(var a=b(a.nextSibling,0),d;(d=a.parentNode)&&d.nodeType===1;)a=d;c.push(a)}for(var x=/(?:^|\s)nocode(?:\s|$)/,m=/\r\n?|\n/,j=a.ownerDocument,k=j.createElement("li");a.firstChild;)k.appendChild(a.firstChild);for(var c=[k],i=0;i<c.length;++i)b(c[i]);d===(d|0)&&c[0].setAttribute("value",d);var r=j.createElement("ol");
+r.className="linenums";for(var d=Math.max(0,d-1|0)||0,i=0,n=c.length;i<n;++i)k=c[i],k.className="L"+(i+d)%10,k.firstChild||k.appendChild(j.createTextNode("\u00a0")),r.appendChild(k);a.appendChild(r)}function p(a,d){for(var g=d.length;--g>=0;){var b=d[g];F.hasOwnProperty(b)?D.console&&console.warn("cannot override language handler %s",b):F[b]=a}}function I(a,d){if(!a||!F.hasOwnProperty(a))a=/^\s*</.test(d)?"default-markup":"default-code";return F[a]}function K(a){var d=a.h;try{var g=T(a.c,a.i),b=g.a;
+a.a=b;a.d=g.d;a.e=0;I(d,b)(a);var s=/\bMSIE\s(\d+)/.exec(navigator.userAgent),s=s&&+s[1]<=8,d=/\n/g,x=a.a,m=x.length,g=0,j=a.d,k=j.length,b=0,c=a.g,i=c.length,r=0;c[i]=m;var n,e;for(e=n=0;e<i;)c[e]!==c[e+2]?(c[n++]=c[e++],c[n++]=c[e++]):e+=2;i=n;for(e=n=0;e<i;){for(var p=c[e],w=c[e+1],t=e+2;t+2<=i&&c[t+1]===w;)t+=2;c[n++]=p;c[n++]=w;e=t}c.length=n;var f=a.c,h;if(f)h=f.style.display,f.style.display="none";try{for(;b<k;){var l=j[b+2]||m,B=c[r+2]||m,t=Math.min(l,B),A=j[b+1],G;if(A.nodeType!==1&&(G=x.substring(g,
+t))){s&&(G=G.replace(d,"\r"));A.nodeValue=G;var L=A.ownerDocument,o=L.createElement("span");o.className=c[r+1];var v=A.parentNode;v.replaceChild(o,A);o.appendChild(A);g<l&&(j[b+1]=A=L.createTextNode(x.substring(t,l)),v.insertBefore(A,o.nextSibling))}g=t;g>=l&&(b+=2);g>=B&&(r+=2)}}finally{if(f)f.style.display=h}}catch(u){D.console&&console.log(u&&u.stack||u)}}var D=window,y=["break,continue,do,else,for,if,return,while"],E=[[y,"auto,case,char,const,default,double,enum,extern,float,goto,inline,int,long,register,short,signed,sizeof,static,struct,switch,typedef,union,unsigned,void,volatile"],
+"catch,class,delete,false,import,new,operator,private,protected,public,this,throw,true,try,typeof"],M=[E,"alignof,align_union,asm,axiom,bool,concept,concept_map,const_cast,constexpr,decltype,delegate,dynamic_cast,explicit,export,friend,generic,late_check,mutable,namespace,nullptr,property,reinterpret_cast,static_assert,static_cast,template,typeid,typename,using,virtual,where"],N=[E,"abstract,assert,boolean,byte,extends,final,finally,implements,import,instanceof,interface,null,native,package,strictfp,super,synchronized,throws,transient"],
+O=[N,"as,base,by,checked,decimal,delegate,descending,dynamic,event,fixed,foreach,from,group,implicit,in,internal,into,is,let,lock,object,out,override,orderby,params,partial,readonly,ref,sbyte,sealed,stackalloc,string,select,uint,ulong,unchecked,unsafe,ushort,var,virtual,where"],E=[E,"debugger,eval,export,function,get,null,set,undefined,var,with,Infinity,NaN"],P=[y,"and,as,assert,class,def,del,elif,except,exec,finally,from,global,import,in,is,lambda,nonlocal,not,or,pass,print,raise,try,with,yield,False,True,None"],
+Q=[y,"alias,and,begin,case,class,def,defined,elsif,end,ensure,false,in,module,next,nil,not,or,redo,rescue,retry,self,super,then,true,undef,unless,until,when,yield,BEGIN,END"],W=[y,"as,assert,const,copy,drop,enum,extern,fail,false,fn,impl,let,log,loop,match,mod,move,mut,priv,pub,pure,ref,self,static,struct,true,trait,type,unsafe,use"],y=[y,"case,done,elif,esac,eval,fi,function,in,local,set,then,until"],R=/^(DIR|FILE|vector|(de|priority_)?queue|list|stack|(const_)?iterator|(multi)?(set|map)|bitset|u?(int|float)\d*)\b/,
+V=/\S/,X=v({keywords:[M,O,E,"caller,delete,die,do,dump,elsif,eval,exit,foreach,for,goto,if,import,last,local,my,next,no,our,print,package,redo,require,sub,undef,unless,until,use,wantarray,while,BEGIN,END",P,Q,y],hashComments:!0,cStyleComments:!0,multiLineStrings:!0,regexLiterals:!0}),F={};p(X,["default-code"]);p(C([],[["pln",/^[^<?]+/],["dec",/^<!\w[^>]*(?:>|$)/],["com",/^<\!--[\S\s]*?(?:--\>|$)/],["lang-",/^<\?([\S\s]+?)(?:\?>|$)/],["lang-",/^<%([\S\s]+?)(?:%>|$)/],["pun",/^(?:<[%?]|[%?]>)/],["lang-",
+/^<xmp\b[^>]*>([\S\s]+?)<\/xmp\b[^>]*>/i],["lang-js",/^<script\b[^>]*>([\S\s]*?)(<\/script\b[^>]*>)/i],["lang-css",/^<style\b[^>]*>([\S\s]*?)(<\/style\b[^>]*>)/i],["lang-in.tag",/^(<\/?[a-z][^<>]*>)/i]]),["default-markup","htm","html","mxml","xhtml","xml","xsl"]);p(C([["pln",/^\s+/,q," \t\r\n"],["atv",/^(?:"[^"]*"?|'[^']*'?)/,q,"\"'"]],[["tag",/^^<\/?[a-z](?:[\w-.:]*\w)?|\/?>$/i],["atn",/^(?!style[\s=]|on)[a-z](?:[\w:-]*\w)?/i],["lang-uq.val",/^=\s*([^\s"'>]*(?:[^\s"'/>]|\/(?=\s)))/],["pun",/^[/<->]+/],
+["lang-js",/^on\w+\s*=\s*"([^"]+)"/i],["lang-js",/^on\w+\s*=\s*'([^']+)'/i],["lang-js",/^on\w+\s*=\s*([^\s"'>]+)/i],["lang-css",/^style\s*=\s*"([^"]+)"/i],["lang-css",/^style\s*=\s*'([^']+)'/i],["lang-css",/^style\s*=\s*([^\s"'>]+)/i]]),["in.tag"]);p(C([],[["atv",/^[\S\s]+/]]),["uq.val"]);p(v({keywords:M,hashComments:!0,cStyleComments:!0,types:R}),["c","cc","cpp","cxx","cyc","m"]);p(v({keywords:"null,true,false"}),["json"]);p(v({keywords:O,hashComments:!0,cStyleComments:!0,verbatimStrings:!0,types:R}),
+["cs"]);p(v({keywords:N,cStyleComments:!0}),["java"]);p(v({keywords:y,hashComments:!0,multiLineStrings:!0}),["bash","bsh","csh","sh"]);p(v({keywords:P,hashComments:!0,multiLineStrings:!0,tripleQuotedStrings:!0}),["cv","py","python"]);p(v({keywords:"caller,delete,die,do,dump,elsif,eval,exit,foreach,for,goto,if,import,last,local,my,next,no,our,print,package,redo,require,sub,undef,unless,until,use,wantarray,while,BEGIN,END",hashComments:!0,multiLineStrings:!0,regexLiterals:2}),["perl","pl","pm"]);p(v({keywords:Q,
+hashComments:!0,multiLineStrings:!0,regexLiterals:!0}),["rb","ruby"]);p(v({keywords:E,cStyleComments:!0,regexLiterals:!0}),["javascript","js"]);p(v({keywords:"all,and,by,catch,class,else,extends,false,finally,for,if,in,is,isnt,loop,new,no,not,null,of,off,on,or,return,super,then,throw,true,try,unless,until,when,while,yes",hashComments:3,cStyleComments:!0,multilineStrings:!0,tripleQuotedStrings:!0,regexLiterals:!0}),["coffee"]);p(v({keywords:W,cStyleComments:!0,multilineStrings:!0}),["rc","rs","rust"]);
+p(C([],[["str",/^[\S\s]+/]]),["regex"]);var Y=D.PR={createSimpleLexer:C,registerLangHandler:p,sourceDecorator:v,PR_ATTRIB_NAME:"atn",PR_ATTRIB_VALUE:"atv",PR_COMMENT:"com",PR_DECLARATION:"dec",PR_KEYWORD:"kwd",PR_LITERAL:"lit",PR_NOCODE:"nocode",PR_PLAIN:"pln",PR_PUNCTUATION:"pun",PR_SOURCE:"src",PR_STRING:"str",PR_TAG:"tag",PR_TYPE:"typ",prettyPrintOne:D.prettyPrintOne=function(a,d,g){var b=document.createElement("div");b.innerHTML="<pre>"+a+"</pre>";b=b.firstChild;g&&J(b,g,!0);K({h:d,j:g,c:b,i:1});
+return b.innerHTML},prettyPrint:D.prettyPrint=function(a,d){function g(){for(var b=D.PR_SHOULD_USE_CONTINUATION?c.now()+250:Infinity;i<p.length&&c.now()<b;i++){for(var d=p[i],j=h,k=d;k=k.previousSibling;){var m=k.nodeType,o=(m===7||m===8)&&k.nodeValue;if(o?!/^\??prettify\b/.test(o):m!==3||/\S/.test(k.nodeValue))break;if(o){j={};o.replace(/\b(\w+)=([\w%+\-.:]+)/g,function(a,b,c){j[b]=c});break}}k=d.className;if((j!==h||e.test(k))&&!v.test(k)){m=!1;for(o=d.parentNode;o;o=o.parentNode)if(f.test(o.tagName)&&
+o.className&&e.test(o.className)){m=!0;break}if(!m){d.className+=" prettyprinted";m=j.lang;if(!m){var m=k.match(n),y;if(!m&&(y=U(d))&&t.test(y.tagName))m=y.className.match(n);m&&(m=m[1])}if(w.test(d.tagName))o=1;else var o=d.currentStyle,u=s.defaultView,o=(o=o?o.whiteSpace:u&&u.getComputedStyle?u.getComputedStyle(d,q).getPropertyValue("white-space"):0)&&"pre"===o.substring(0,3);u=j.linenums;if(!(u=u==="true"||+u))u=(u=k.match(/\blinenums\b(?::(\d+))?/))?u[1]&&u[1].length?+u[1]:!0:!1;u&&J(d,u,o);r=
+{h:m,c:d,j:u,i:o};K(r)}}}i<p.length?setTimeout(g,250):"function"===typeof a&&a()}for(var b=d||document.body,s=b.ownerDocument||document,b=[b.getElementsByTagName("pre"),b.getElementsByTagName("code"),b.getElementsByTagName("xmp")],p=[],m=0;m<b.length;++m)for(var j=0,k=b[m].length;j<k;++j)p.push(b[m][j]);var b=q,c=Date;c.now||(c={now:function(){return+new Date}});var i=0,r,n=/\blang(?:uage)?-([\w.]+)(?!\S)/,e=/\bprettyprint\b/,v=/\bprettyprinted\b/,w=/pre|xmp/i,t=/^code$/i,f=/^(?:pre|code|xmp)$/i,
+h={};g()}};typeof define==="function"&&define.amd&&define("google-code-prettify",[],function(){return Y})})();}()</script>
+    <script type="text/javascript">
+        var bridge = {};
+        bridge.Eval = function (str) {
+            return eval(str);
+        }
+        bridge.Get = function (scope, name) {
+            return scope[name];
+        }
+        bridge.Set = function (scope, name, value) {
+            scope[name] = value;
+        }
+        bridge.IsDefined = function (scope, name, value) {
+            return scope[name] != undefined;
+        }
+        bridge.Delete = function (obj) {
+            delete obj;
+        }
+        bridge.DeleteMember = function (obj, member) {
+            delete obj[member];
+        }
+        bridge.ForEach = function (obj, func) {
+            for (var name in obj) {
+                func(name, obj[name]);
+            }
+        }
+        bridge.Keys = function (obj) {
+            return Object.keys(obj);
+        }
+        bridge.DispatchEvent = function (target, ev) {
+            var event = document.createEvent(ev.interface || "HTMLEvents");
+            event.initEvent(ev.type, ev.bubbles || false, ev.cancelable || false);
+            for (key in ev) event[key] = ev[key];
+            target.dispatchEvent(event);
+        }
+        bridge.PreventDefault = function (ev) {
+            ev.preventDefault();
+        }
+        bridge.StopPropagation = function (ev) {
+            ev.stopPropagation();
+        }
+        bridge.createSvgElement = function (a, b, c, d) {
+            a = document.createElementNS("http://www.w3.org/2000/svg", a);
+            for (var e in b) a.setAttribute(e, b[e]);
+            document.body.runtimeStyle && (a.runtimeStyle = a.currentStyle = a.style);
+            c && c.appendChild(a);
+            return a
+        };
+        bridge.CreateSvgDom = function (a, b) {
+            var c = bridge.createSvgElement("svg", {
+                xmlns: "http://www.w3.org/2000/svg",
+                "xmlns:html": "http://www.w3.org/1999/xhtml",
+                "xmlns:xlink": "http://www.w3.org/1999/xlink",
+                version: "1.1",
+                "class": "blocklySvg"
+            }, a),
+                d = bridge.createSvgElement("defs", {}, c),
+                e = String(Math.random()).substring(2),
+                f = bridge.createSvgElement("filter", {
+                    id: "blocklyEmbossFilter" + e
+                }, d);
+            bridge.createSvgElement("feGaussianBlur", {
+                "in": "SourceAlpha",
+                stdDeviation: 1,
+                result: "blur"
+            }, f);
+            var g = bridge.createSvgElement("feSpecularLighting", {
+                "in": "blur",
+                surfaceScale: 1,
+                specularConstant: .5,
+                specularExponent: 10,
+                "lighting-color": "white",
+                result: "specOut"
+            }, f);
+            bridge.createSvgElement("fePointLight", {
+                x: -5E3,
+                y: -1E4,
+                z: 2E4
+            }, g);
+            bridge.createSvgElement("feComposite", {
+                "in": "specOut",
+                in2: "SourceAlpha",
+                operator: "in",
+                result: "specOut"
+            }, f);
+            bridge.createSvgElement("feComposite", {
+                "in": "SourceGraphic",
+                in2: "specOut",
+                operator: "arithmetic",
+                k1: 0,
+                k2: 1,
+                k3: 1,
+                k4: 0
+            }, f);
+            b.embossFilterId = f.id;
+            f = bridge.createSvgElement("pattern", {
+                id: "blocklyDisabledPattern" + e,
+                patternUnits: "userSpaceOnUse",
+                width: 10,
+                height: 10
+            }, d);
+            bridge.createSvgElement("rect", {
+                width: 10,
+                height: 10,
+                fill: "#aaa"
+            }, f);
+            bridge.createSvgElement("path", {
+                d: "M 0 0 L 10 10 M 10 0 L 0 10",
+                stroke: "#cc0"
+            }, f);
+            b.disabledPatternId = f.id;
+            d = bridge.createSvgElement("pattern", {
+                id: "blocklyGridPattern" + e,
+                patternUnits: "userSpaceOnUse"
+            }, d);
+            0 < b.gridOptions.length && 0 < b.gridOptions.spacing && (bridge.createSvgElement("line", {
+                stroke: b.gridOptions.colour
+            }, d), 1 < b.gridOptions.length && bridge.createSvgElement("line", {
+                stroke: b.gridOptions.colour
+            }, d));
+            b.gridPattern = d;
+            return c
+        };
+        bridge.PrettyPrintOne = function (code, lang) {
+            return prettyPrintOne(code, lang);
+        }
+        bridge.CresateFileReader = function () {
+            return new FileReader();
+        }
+        external.Window = window;
+        external.Document = document;
+        external.Navigator = window.navigator;
+        external.Bridge = bridge;
+        external.Init();
+    </script>
+</head>
+<body onbeforeunload="return external.confirmLeavePage()">
+    <h1>
+        <a href="https://developers.google.com/blockly/">Blockly</a> &gt;
+        <a href="../index.html">Demos</a> &gt; Blockly Developer Tools
+        <button id="helpButton" title="View documentation in new window.">
+            <span>Help</span>
+        </button>
+    </h1>
+    <div id="tabContainer">
+        <div id="blockFactory_tab" class="tab tabon">Block Factory</div>
+        <div id="blocklibraryExporter_tab" class="tab taboff">Block Exporter</div>
+        <div id="workspaceFactory_tab" class="tab taboff">Workspace Factory</div>
+    </div>
+
+    <!-- Exporter tab -->
+    <div id="blockLibraryExporter">
+        <br>
+        <p>
+            First, select blocks from your block library by clicking on them. Then, use the Export Settings form to download starter code for selected blocks.
+        </p>
+        <div id="exportSelector">
+            <br>
+            <h3>Block Selector</h3>
+            <div class="dropdown">
+                <button id="button_setBlocks">Select</button>
+                <div id="dropdownDiv_setBlocks" class="dropdown-content">
+                    <a id="dropdown_addAllFromLib" title="Select all block library blocks.">All Stored in Block Library</a>
+                    <a id="dropdown_addAllUsed" title="Select all block library blocks used in workspace factory.">All Used in Workspace Factory</a>
+                </div>
+                <button id="clearSelectedButton" title="Clear selected blocks.">Clear Selected</a>
+            </div>
+
+            <div id="blockSelector"></div>
+        </div>
+
+        <!-- Users may customize export settings through this form -->
+        <div id="exportSettings">
+            <br>
+            <h3> Export Settings </h3>
+            <form id="exportSettingsForm">
+
+                <div id="selectedBlocksTextContainer">
+                    <p>Currently Selected:</p>
+                    <p id="selectedBlocksText"></p>
+                </div>
+                <label><input type="checkbox" id="blockDefCheck">Block Definition(s)</label><br>
+                <div id="blockDefSettings" class="subsettings">
+                    <label>
+                        Format:
+                        <select id="exportFormat">
+                            <option value="JSON">JSON</option>
+                            <option value="JavaScript">JavaScript</option>
+                        </select>
+                    </label>
+                    <br>
+                    <label>
+                        File Name:<br>
+                        <input type="text" id="blockDef_filename">
+                    </label>
+                </div>
+                <br>
+
+                <label><input type="checkbox" id="genStubCheck">Generator Stub(s)</label><br>
+                <div id="genStubSettings" class="subsettings">
+                    <label>
+                        Language:
+                        <select id="exportLanguage">
+                            <option value="JavaScript">JavaScript</option>
+                            <option value="Python">Python</option>
+                            <option value="PHP">PHP</option>
+                            <option value="Lua">Lua</option>
+                            <option value="Dart">Dart</option>
+                        </select>
+                    </label>
+                    <br>
+                    <label>
+                        File Name:<br>
+                        <input type="text" id="generatorStub_filename">
+                    </label><br>
+                </div>
+                <br>
+            </form>
+            <button id="exporterSubmitButton" title="Download block starter code as specified in export settings.">Export</button>
+        </div>
+        <div id="exportPreview">
+            <br>
+            <h3>Export Preview</h3>
+            <div id="blockDefs" class="exportPreviewTextArea">
+                <p id="blockDefs_label">Block Definitions:</p>
+                <pre id="blockDefs_textArea"></pre>
+            </div>
+            <div id="genStubs" class="exportPreviewTextArea">
+                <p id="genStubs_label">Generator Stubs:</p>
+                <pre id="genStubs_textArea"></pre>
+            </div>
+        </div>
+    </div>
+
+    <!-- Workspace Factory tab -->
+
+    <div id="workspaceFactoryContent">
+        <div id="factoryHeader">
+            <p>
+                <div class="dropdown">
+                    <button id="button_importBlocks">Import Custom Blocks</button>
+                    <div id="dropdownDiv_importBlocks" class="dropdown-content">
+                        <input type="file" id="input_importBlocksJson" accept=".js, .json, .txt" class="inputfile"</input>
+                        <label for="input_importBlocksJson">From JSON</label>
+                        <input type="file" id="input_importBlocksJs" accept=".js, .txt" class="inputfile"</input>
+                        <label for="input_importBlocksJs">From Javascript</label>
+                    </div>
+                </div>
+
+                <div class="dropdown">
+                    <button id="button_load">Load to Edit</button>
+                    <div id="dropdownDiv_load" class="dropdown-content">
+                        <input type="file" id="input_loadToolbox" accept=".xml" class="inputfile"></input>
+                        <label for="input_loadToolbox">Toolbox</label>
+                        <input type="file" id="input_loadPreload" accept=".xml" class="inputfile"</input>
+                        <label for="input_loadPreload">Workspace Blocks</label>
+                    </div>
+                </div>
+
+                <div class="dropdown">
+                    <button id="button_export">Export</button>
+                    <div id="dropdownDiv_export" class="dropdown-content">
+                        <a id="dropdown_exportOptions">Starter Code</a>
+                        <a id="dropdown_exportToolbox">Toolbox</a>
+                        <a id="dropdown_exportPreload">Workspace Blocks</a>
+                        <a id="dropdown_exportAll">All</a>
+                    </div>
+                </div>
+
+                <button id="button_clear">Clear</button>
+            </p>
+        </div>
+
+        <section id="createDiv">
+            <div id="createHeader">
+                <h3>Edit</h3>
+                <p id="editHelpText">Drag blocks into the workspace to configure the toolbox in your custom workspace.</p>
+            </div>
+            <table id="workspaceTabs" style="width:auto; height:auto">
+                <tr>
+                    <td id="tab_toolbox" class="tabon">Toolbox</td>
+                    <td id="tab_preload" class="taboff">Workspace</td>
+                </tr>
+            </table>
+            <section id="toolbox_section">
+                <div id="toolbox_blocks"></div>
+            </section>
+            <aside id="toolbox_div">
+                <p id="categoryHeader">You currently have no categories.</p>
+                <table id="categoryTable" style="width:auto; height:auto">
+                </table>
+                <p>&nbsp;</p>
+
+                <div class="dropdown">
+                    <button id="button_add" class="large">+</button>
+                    <div id="dropdownDiv_add" class="dropdown-content">
+                        <a id="dropdown_newCategory">New Category</a>
+                        <a id="dropdown_loadCategory">Standard Category</a>
+                        <a id="dropdown_separator">Separator</a>
+                        <a id="dropdown_loadStandardToolbox">Standard Toolbox</a>
+                    </div>
+                </div>
+
+                <button id="button_remove" class="large">-</button>
+
+                <button id="button_up" class="large">&#8593;</button>
+                <button id="button_down" class="large">&#8595;</button>
+
+                <br>
+                <div class="dropdown">
+                    <button id="button_editCategory">Edit Category</button>
+                    <div id="dropdownDiv_editCategory" class="dropdown-content">
+                        <a id='dropdown_name'>Name</a>
+                        <a id='dropdown_color'>Colour</a>
+                    </div>
+                </div>
+
+            </aside>
+
+            <button id="button_addShadow" style="display: none">Make Shadow</button>
+            <button id="button_removeShadow" style="display: none">Remove Shadow</button>
+
+            <aside id="preload_div" style="display:none">
+                <div id="preloadHelp">
+                    <p>Configure the options for your Blockly inject call.</p>
+                    <button id="button_optionsHelp">Help</button>
+                    <button class="small" id="button_standardOptions">Reset to Default</button>
+                </div>
+                <div id="workspace_options">
+                    <label><input type="checkbox" id="option_readOnly_checkbox" class="optionsInput">Read Only</label><br>
+                    <div id="readonly1">
+                        <label><input type="checkbox" id="option_collapse_checkbox" class="optionsInput">Collapsible Blocks</label><br>
+                    </div>
+                    <div id="readonly2">
+                        <label><input type="checkbox" id="option_comments_checkbox" class="optionsInput">Comments for Blocks</label><br>
+                    </div>
+                    <label><input type="checkbox" id="option_css_checkbox" class="optionsInput">Use Blockly CSS</label><br>
+                    <div id="readonly3">
+                        <label><input type="checkbox" id="option_disable_checkbox" class="optionsInput">Disabled Blocks</label><br>
+                    </div>
+                    <label><input type="checkbox" id="option_grid_checkbox" class="optionsInput">Use Grid</label><br>
+                    <div id="grid_options" name="grid" style="display: none">
+                        <label>Spacing <input type="number" id="gridOption_spacing_number" class="optionsInput" value="0"></label><br>
+                        <label>Length <input type="number" id="gridOption_length_number" class="optionsInput" value="1"></label><br>
+                        <label>Colour <input type="text" id="gridOption_colour_text" class="optionsInput" value="#888"></label><br>
+                        <label><input type="checkbox" id="gridOption_snap_checkbox" class="optionsInput" value="grid_snap_checkbox">Snap</label><br>
+                    </div>
+                    <div id="readonly4">
+                        <label><input type="checkbox" id="option_infiniteBlocks_checkbox" class="optionsInput" value="checked">Infinite Blocks</label><br>
+                        <div id="maxBlockNumber_option" style="display: none">
+                            <label>Max Blocks <input type="number" id="option_maxBlocks_number" class="optionsInput" value=100></label><br>
+                        </div>
+                    </div>
+                    <label>Path to Blockly Media <input type="text" id="option_media_text" class="optionsInput"></label><br>
+                    <label><input type="checkbox" id="option_rtl_checkbox" class="optionsInput">Layout with RTL</label><br>
+                    <label><input type="checkbox" id="option_scrollbars_checkbox" class="optionsInput">Scrollbars</label><br>
+                    <div id="readonly5">
+                        <label><input type="checkbox" id="option_sounds_checkbox" class="optionsInput">Sounds<br>
+                    </div>
+                    <div id="readonly6">
+                        <label><input type="checkbox" id="option_trashcan_checkbox" class="optionsInput">Trashcan</label><br>
+                    </div>
+                    <div id="readonly7">
+                        <label><input type="checkbox" id="option_zoom_checkbox" class="optionsInput">Zoom</label><br>
+                        <div id="zoom_options" name="zoom" style="display: none">
+                            <label><input type="checkbox" id="zoomOption_controls_checkbox" class="optionsInput">Zoom Controls</label><br>
+                            <label><input type="checkbox" id="zoomOption_wheel_checkbox" class="optionsInput">Zoom Wheel</label><br>
+                            <label>Start Scale <input type="number" id="zoomOption_startScale_number" class="optionsInput" name="startScale" value="1.0"></label><br>
+                            <label>Max Scale <input type="number" id="zoomOption_maxScale_number" class="optionsInput" value="3"></label><br>
+                            <label>Min Scale <input type="number" id="zoomOption_minScale_number" class="optionsInput" value="0.3"></label><br>
+                            <label>Scale Speed <input type="number" id="zoomOption_scaleSpeed_number" class="optionsInput" value="1.2"></label><br>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+        </section>
+
+        <aside id="previewDiv">
+            <div id="previewBorder">
+                <div id="previewHelp">
+                    <h3>Preview</h3>
+                    <p>This is what your custom workspace will look like.</p>
+                </div>
+                <div id="preview_blocks" class="content"></div>
+            </div>
+        </aside>
+    </div>
+
+    <!-- Blockly Factory Tab -->
+    <table id="blockFactoryContent">
+        <tr width="100%" height="10%">
+            <td width="50%" height="5%">
+                <table>
+                    <tr id="blockLibrary">
+                        <td id="blockLibraryContainer">
+                            <span>
+                                <div class="dropdown">
+                                    <button id="button_blockLib">Block Library</button>
+                                    <div id="dropdownDiv_blockLib" class="dropdown-content">
+                                        <a id="createNewBlockButton">Create New Block</a>
+                                    </div>
+                                </div>
+                                <select id="blockLibraryDropdown" style="display:none">
+                                </select>
+                            </span>
+                        </td>
+                        <td id="blockLibraryControls">
+                            <button id="saveToBlockLibraryButton" title="Save block to Block Library.">
+                                Save "block_type"
+                            </button>
+                            <button id="removeBlockFromLibraryButton" title="Remove block from Block Library.">
+                                Delete "block_type"
+                            </button>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+            <td height="5%">
+                <table id="blockFactoryPreview">
+                    <tr>
+                        <td id="previewContainer">
+                            <h3>
+                                Preview:
+                                <select id="direction">
+                                    <option value="ltr">LTR</option>
+                                    <option value="rtl">RTL</option>
+                                </select>
+                            </h3>
+                        </td>
+                        <td id="buttonContainer">
+                            <button id="linkButton" title="Save and link to blocks.">
+                                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABUAAAAVCAYAAACpF6WWAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH3gcOFQsWu9Jx3QAAAHFJREFUOMtjYBgFo4BmoJ+BgeE/Gn7PwMAQgKQmACqGrq6fWAORDYaB93jUwQ1mhNL/obQhAwPDBSjbgYDPDkBpAwYGhvNo5sEN/Y+m6T8BjE2tAgMDAwMLmqQBkksdiYwLAyT2A5qFKU1jfxSMAioBAN4GR3P9G/Y2AAAAAElFTkSuQmCC" height="21" width="21">
+                            </button>
+                            <button id="clearBlockLibraryButton" title="Clear Block Library.">
+                                <span>Clear Library</span>
+                            </button>
+                            <label for="files" class="buttonStyle">
+                                <span class=>Import Block Library</span>
+                            </label>
+                            <input id="files" type="file" name="files"
+                                   accept="application/xml">
+                            <button id="localSaveButton" title="Save block library XML to a local file.">
+                                <span>Download Block Library</span>
+                            </button>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr height="80%">
+            <td id="blocklyWorkspaceContainer">
+                <div id="blockly"></div>
+                <div id="blocklyMask"></div>
+            </td>
+            <td width="50%">
+                <table id="blocklyPreviewContainer">
+                    <tr>
+                        <td height="30%">
+                            <div id="preview"></div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td height="5%">
+                            <h3>
+                                Block Definition:
+                                <select id="format">
+                                    <option value="JSON">JSON</option>
+                                    <option value="JavaScript">JavaScript</option>
+                                    <option value="Manual">Manual edit&hellip;</option>
+                                </select>
+                            </h3>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td height="30%">
+                            <pre id="languagePre"></pre>
+                            <textarea id="languageTA"></textarea>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td height="5%">
+                            <h3>
+                                Generator stub:
+                                <select id="language">
+                                    <option value="JavaScript">JavaScript</option>
+                                    <option value="Python">Python</option>
+                                    <option value="PHP">PHP</option>
+                                    <option value="Lua">Lua</option>
+                                    <option value="Dart">Dart</option>
+                                </select>
+                            </h3>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td height="30%">
+                            <pre id="generatorPre"></pre>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+
+    <div id="modalShadow"></div>
+
+    <xml id="blockfactory_toolbox" class="toolbox">
+        <category name="Input">
+            <block type="input_value">
+                <value name="TYPE">
+                    <shadow type="type_null"></shadow>
+                </value>
+            </block>
+            <block type="input_statement">
+                <value name="TYPE">
+                    <shadow type="type_null"></shadow>
+                </value>
+            </block>
+            <block type="input_dummy"></block>
+        </category>
+        <category name="Field">
+            <block type="field_static"></block>
+            <block type="field_input"></block>
+            <block type="field_number"></block>
+            <block type="field_angle"></block>
+            <block type="field_dropdown"></block>
+            <block type="field_checkbox"></block>
+            <block type="field_colour"></block>
+            <!--
+            Date picker commented out since it increases footprint by 60%.
+            Add it only if you need it.  See also goog.require in blockly.js.
+            <block type="field_date"></block>
+            -->
+            <block type="field_variable"></block>
+            <block type="field_image"></block>
+        </category>
+        <category name="Type">
+            <block type="type_group"></block>
+            <block type="type_null"></block>
+            <block type="type_boolean"></block>
+            <block type="type_number"></block>
+            <block type="type_string"></block>
+            <block type="type_list"></block>
+            <block type="type_other"></block>
+        </category>
+        <category name="Colour" id="colourCategory">
+            <block type="colour_hue"><mutation colour="20"></mutation><field name="HUE">20</field></block>
+            <block type="colour_hue"><mutation colour="65"></mutation><field name="HUE">65</field></block>
+            <block type="colour_hue"><mutation colour="120"></mutation><field name="HUE">120</field></block>
+            <block type="colour_hue"><mutation colour="160"></mutation><field name="HUE">160</field></block>
+            <block type="colour_hue"><mutation colour="210"></mutation><field name="HUE">210</field></block>
+            <block type="colour_hue"><mutation colour="230"></mutation><field name="HUE">230</field></block>
+            <block type="colour_hue"><mutation colour="260"></mutation><field name="HUE">260</field></block>
+            <block type="colour_hue"><mutation colour="290"></mutation><field name="HUE">290</field></block>
+            <block type="colour_hue"><mutation colour="330"></mutation><field name="HUE">330</field></block>
+        </category>
+    </xml>
+
+    <xml id="workspacefactory_toolbox" class="toolbox">
+        <category name="Logic" colour="210">
+            <block type="controls_if"></block>
+            <block type="logic_compare"></block>
+            <block type="logic_operation"></block>
+            <block type="logic_negate"></block>
+            <block type="logic_boolean"></block>
+            <block type="logic_null"></block>
+            <block type="logic_ternary"></block>
+        </category>
+        <category name="Loops" colour="120">
+            <block type="controls_repeat_ext">
+                <value name="TIMES">
+                    <shadow type="math_number">
+                        <field name="NUM">10</field>
+                    </shadow>
+                </value>
+            </block>
+            <block type="controls_whileUntil"></block>
+            <block type="controls_for">
+                <value name="FROM">
+                    <shadow type="math_number">
+                        <field name="NUM">1</field>
+                    </shadow>
+                </value>
+                <value name="TO">
+                    <shadow type="math_number">
+                        <field name="NUM">10</field>
+                    </shadow>
+                </value>
+                <value name="BY">
+                    <shadow type="math_number">
+                        <field name="NUM">1</field>
+                    </shadow>
+                </value>
+            </block>
+            <block type="controls_forEach"></block>
+            <block type="controls_flow_statements"></block>
+        </category>
+        <category name="Math" colour="230">
+            <block type="math_number"></block>
+            <block type="math_arithmetic">
+                <value name="A">
+                    <shadow type="math_number">
+                        <field name="NUM">1</field>
+                    </shadow>
+                </value>
+                <value name="B">
+                    <shadow type="math_number">
+                        <field name="NUM">1</field>
+                    </shadow>
+                </value>
+            </block>
+            <block type="math_single">
+                <value name="NUM">
+                    <shadow type="math_number">
+                        <field name="NUM">9</field>
+                    </shadow>
+                </value>
+            </block>
+            <block type="math_trig">
+                <value name="NUM">
+                    <shadow type="math_number">
+                        <field name="NUM">45</field>
+                    </shadow>
+                </value>
+            </block>
+            <block type="math_constant"></block>
+            <block type="math_number_property">
+                <value name="NUMBER_TO_CHECK">
+                    <shadow type="math_number">
+                        <field name="NUM">0</field>
+                    </shadow>
+                </value>
+            </block>
+            <block type="math_round">
+                <value name="NUM">
+                    <shadow type="math_number">
+                        <field name="NUM">3.1</field>
+                    </shadow>
+                </value>
+            </block>
+            <block type="math_on_list"></block>
+            <block type="math_modulo">
+                <value name="DIVIDEND">
+                    <shadow type="math_number">
+                        <field name="NUM">64</field>
+                    </shadow>
+                </value>
+                <value name="DIVISOR">
+                    <shadow type="math_number">
+                        <field name="NUM">10</field>
+                    </shadow>
+                </value>
+            </block>
+            <block type="math_constrain">
+                <value name="VALUE">
+                    <shadow type="math_number">
+                        <field name="NUM">50</field>
+                    </shadow>
+                </value>
+                <value name="LOW">
+                    <shadow type="math_number">
+                        <field name="NUM">1</field>
+                    </shadow>
+                </value>
+                <value name="HIGH">
+                    <shadow type="math_number">
+                        <field name="NUM">100</field>
+                    </shadow>
+                </value>
+            </block>
+            <block type="math_random_int">
+                <value name="FROM">
+                    <shadow type="math_number">
+                        <field name="NUM">1</field>
+                    </shadow>
+                </value>
+                <value name="TO">
+                    <shadow type="math_number">
+                        <field name="NUM">100</field>
+                    </shadow>
+                </value>
+            </block>
+            <block type="math_random_float"></block>
+        </category>
+        <category name="Text" colour="160">
+            <block type="text"></block>
+            <block type="text_join"></block>
+            <block type="text_append">
+                <value name="TEXT">
+                    <shadow type="text"></shadow>
+                </value>
+            </block>
+            <block type="text_length">
+                <value name="VALUE">
+                    <shadow type="text">
+                        <field name="TEXT">abc</field>
+                    </shadow>
+                </value>
+            </block>
+            <block type="text_isEmpty">
+                <value name="VALUE">
+                    <shadow type="text">
+                        <field name="TEXT"></field>
+                    </shadow>
+                </value>
+            </block>
+            <block type="text_indexOf">
+                <value name="VALUE">
+                    <block type="variables_get">
+                        <field name="VAR">text</field>
+                    </block>
+                </value>
+                <value name="FIND">
+                    <shadow type="text">
+                        <field name="TEXT">abc</field>
+                    </shadow>
+                </value>
+            </block>
+            <block type="text_charAt">
+                <value name="VALUE">
+                    <block type="variables_get">
+                        <field name="VAR">text</field>
+                    </block>
+                </value>
+            </block>
+            <block type="text_getSubstring">
+                <value name="STRING">
+                    <block type="variables_get">
+                        <field name="VAR">text</field>
+                    </block>
+                </value>
+            </block>
+            <block type="text_changeCase">
+                <value name="TEXT">
+                    <shadow type="text">
+                        <field name="TEXT">abc</field>
+                    </shadow>
+                </value>
+            </block>
+            <block type="text_trim">
+                <value name="TEXT">
+                    <shadow type="text">
+                        <field name="TEXT">abc</field>
+                    </shadow>
+                </value>
+            </block>
+            <block type="text_print">
+                <value name="TEXT">
+                    <shadow type="text">
+                        <field name="TEXT">abc</field>
+                    </shadow>
+                </value>
+            </block>
+            <block type="text_prompt_ext">
+                <value name="TEXT">
+                    <shadow type="text">
+                        <field name="TEXT">abc</field>
+                    </shadow>
+                </value>
+            </block>
+        </category>
+        <category name="Lists" colour="260">
+            <block type="lists_create_with">
+                <mutation items="0"></mutation>
+            </block>
+            <block type="lists_create_with"></block>
+            <block type="lists_repeat">
+                <value name="NUM">
+                    <shadow type="math_number">
+                        <field name="NUM">5</field>
+                    </shadow>
+                </value>
+            </block>
+            <block type="lists_length"></block>
+            <block type="lists_isEmpty"></block>
+            <block type="lists_indexOf">
+                <value name="VALUE">
+                    <block type="variables_get">
+                        <field name="VAR">list</field>
+                    </block>
+                </value>
+            </block>
+            <block type="lists_getIndex">
+                <value name="VALUE">
+                    <block type="variables_get">
+                        <field name="VAR">list</field>
+                    </block>
+                </value>
+            </block>
+            <block type="lists_setIndex">
+                <value name="LIST">
+                    <block type="variables_get">
+                        <field name="VAR">list</field>
+                    </block>
+                </value>
+            </block>
+            <block type="lists_getSublist">
+                <value name="LIST">
+                    <block type="variables_get">
+                        <field name="VAR">list</field>
+                    </block>
+                </value>
+            </block>
+            <block type="lists_split">
+                <value name="DELIM">
+                    <shadow type="text">
+                        <field name="TEXT">,</field>
+                    </shadow>
+                </value>
+            </block>
+            <block type="lists_sort"></block>
+        </category>
+        <category name="Colour" colour="20">
+            <block type="colour_picker"></block>
+            <block type="colour_random"></block>
+            <block type="colour_rgb">
+                <value name="RED">
+                    <shadow type="math_number">
+                        <field name="NUM">100</field>
+                    </shadow>
+                </value>
+                <value name="GREEN">
+                    <shadow type="math_number">
+                        <field name="NUM">50</field>
+                    </shadow>
+                </value>
+                <value name="BLUE">
+                    <shadow type="math_number">
+                        <field name="NUM">0</field>
+                    </shadow>
+                </value>
+            </block>
+            <block type="colour_blend">
+                <value name="COLOUR1">
+                    <shadow type="colour_picker">
+                        <field name="COLOUR">#ff0000</field>
+                    </shadow>
+                </value>
+                <value name="COLOUR2">
+                    <shadow type="colour_picker">
+                        <field name="COLOUR">#3333ff</field>
+                    </shadow>
+                </value>
+                <value name="RATIO">
+                    <shadow type="math_number">
+                        <field name="NUM">0.5</field>
+                    </shadow>
+                </value>
+            </block>
+        </category>
+        <sep></sep>
+        <category name="Variables" colour="330" custom="VARIABLE"></category>
+        <category name="Functions" colour="290" custom="PROCEDURE"></category>
+        <sep></sep>
+        <category name="Block Library" colour="260" id="blockLibCategory"></category>
+    </xml>
+</body>
+</html>

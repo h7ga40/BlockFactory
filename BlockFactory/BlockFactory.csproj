@@ -1,0 +1,238 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{54F48AE6-361F-4040-A5ED-DE704D9B7755}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>BlockFactoryApp</RootNamespace>
+    <AssemblyName>BlockFactory</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>favicon.ico</ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.JScript" />
+    <Reference Include="Microsoft.mshtml, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Blockly\Msg.cs" />
+    <Compile Include="Blockly\Input.cs" />
+    <Compile Include="Closure\KeyCodes.cs" />
+    <Compile Include="Blockly\ConnectionDB.cs" />
+    <Compile Include="BlocklyMruby\MrbParser.cs" />
+    <Compile Include="BlocklyMruby\MrbScanner.cs" />
+    <Compile Include="BlocklyMruby\Ruby\Math.cs" />
+    <Compile Include="Closure\TreeNode.cs" />
+    <Compile Include="Blockly\BlockRenderSvg.cs" />
+    <Compile Include="BlocklyMruby\Mruby.cs" />
+    <Compile Include="Closure\log.cs" />
+    <Compile Include="Blockly\Connection.cs" />
+    <Compile Include="Blockly\Constants.cs" />
+    <Compile Include="MainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MainForm.Designer.cs">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Uint8Array.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="BlocklyMruby\Ruby\Variables.cs" />
+    <Compile Include="BlocklyMruby\Ruby\Text.cs" />
+    <Compile Include="BlocklyMruby\Ruby\Procedures.cs" />
+    <Compile Include="BlocklyMruby\Ruby\Loops.cs" />
+    <Compile Include="BlocklyMruby\Ruby\Logic.cs" />
+    <Compile Include="BlocklyMruby\Ruby\Lists.cs" />
+    <Compile Include="BlocklyMruby\Ruby\Colour.cs" />
+    <Compile Include="BlocklyMruby\Ruby.cs" />
+    <Compile Include="BlocklyMruby\BlocklyView.cs" />
+    <Compile Include="Blockly\Blocks\Procedures.cs" />
+    <Compile Include="Blockly\Blocks\Text.cs" />
+    <Compile Include="Blockly\Blocks\Variables.cs" />
+    <Compile Include="Blockly\Fields\FieldAngle.cs" />
+    <Compile Include="Blockly\Fields\FieldNumber.cs" />
+    <Compile Include="Blockly\Fields\FieldTextInput.cs" />
+    <Compile Include="Blockly\Fields\FieldVariable.cs" />
+    <Compile Include="Closure\ControlRenderer.cs" />
+    <Compile Include="Closure\userAgent.cs" />
+    <Compile Include="BlockFactory\block_option.cs" />
+    <Compile Include="BlockFactory\block_library_storage.cs" />
+    <Compile Include="Blockly\Block.cs" />
+    <Compile Include="Blockly\Utils.cs" />
+    <Compile Include="BlockFactory\factory_utils.cs" />
+    <Compile Include="Bridge.cs" />
+    <Compile Include="Blockly\Storage.cs" />
+    <Compile Include="BlockFactory\factory.cs" />
+    <Compile Include="BlockFactory\app_controller.cs" />
+    <Compile Include="BlockFactory\blocks.cs" />
+    <Compile Include="Blockly\Blocks\Logic.cs" />
+    <Compile Include="Blockly\Field.cs" />
+    <Compile Include="Blockly\Options.cs" />
+    <Compile Include="Blockly\Xml.cs" />
+    <Compile Include="Blockly\Blocks.cs" />
+    <Compile Include="Closure\goog.cs" />
+    <Compile Include="Blockly\WorkspaceSvg.cs" />
+    <Compile Include="BlockFactory\workspacefactory\wfactory_controller.cs" />
+    <Compile Include="Blockly\Blocks\Colour.cs" />
+    <Compile Include="Blockly\Blocks\Lists.cs" />
+    <Compile Include="Blockly\Blocks\Loops.cs" />
+    <Compile Include="Blockly\Blocks\Math.cs" />
+    <Compile Include="Blockly\Flyout.cs" />
+    <Compile Include="Blockly\Toolbox.cs" />
+    <Compile Include="Blockly\Events.cs" />
+    <Compile Include="Blockly\Generator.cs" />
+    <Compile Include="Blockly\Procedures.cs" />
+    <Compile Include="ScriptingHost.cs" />
+    <Compile Include="Closure\EventTarget.cs" />
+    <Compile Include="Closure\PopupBase.cs" />
+    <Compile Include="Closure\Listenable.cs" />
+    <Compile Include="Closure\Popup.cs" />
+    <Compile Include="Closure\PopupColorPicker.cs" />
+    <Compile Include="Closure\events.cs" />
+    <Compile Include="BlockFactory\workspacefactory\wfactory_init.cs" />
+    <Compile Include="Closure\DatePicker.cs" />
+    <Compile Include="Closure\ColorPalette.cs" />
+    <Compile Include="Closure\DefaultDatePickerRenderer.cs" />
+    <Compile Include="Closure\PaletteRenderer.cs" />
+    <Compile Include="Closure\MenuItem.cs" />
+    <Compile Include="Closure\MenuItemRenderer.cs" />
+    <Compile Include="Closure\Menu.cs" />
+    <Compile Include="Closure\MenuRenderer.cs" />
+    <Compile Include="Closure\ContainerRenderer.cs" />
+    <Compile Include="BlockFactory\workspacefactory\wfactory_view.cs" />
+    <Compile Include="Blockly\Workspace.cs" />
+    <Compile Include="BlockFactory\standard_categories.cs" />
+    <Compile Include="BlockFactory\block_library_controller.cs" />
+    <Compile Include="Blockly\BlockSvg.cs" />
+    <Compile Include="BlockFactory\workspacefactory\wfactory_generator.cs" />
+    <Compile Include="BlockFactory\block_library_view.cs" />
+    <Compile Include="BlockFactory\block_exporter_controller.cs" />
+    <Compile Include="BlockFactory\block_exporter_view.cs" />
+    <Compile Include="BlockFactory\block_exporter_tools.cs" />
+    <Compile Include="BlockFactory\workspacefactory\wfactory_model.cs" />
+    <Compile Include="Blockly\Fields\FieldCheckbox.cs" />
+    <Compile Include="Blockly\Fields\FieldColour.cs" />
+    <Compile Include="Blockly\Fields\FieldDate.cs" />
+    <Compile Include="Blockly\Fields\FieldDropdown.cs" />
+    <Compile Include="mshtml.cs" />
+    <Compile Include="Closure\Container.cs" />
+    <Compile Include="Blockly\Tooltip.cs" />
+    <Compile Include="Blockly\Fields\FieldLabel.cs" />
+    <Compile Include="Blockly\Comment.cs" />
+    <Compile Include="Closure\Control.cs" />
+    <Compile Include="Closure\Component.cs" />
+    <Compile Include="Blockly\ZoomControls.cs" />
+    <Compile Include="Blockly\Trashcan.cs" />
+    <Compile Include="Blockly\Scrollbar.cs" />
+    <Compile Include="Blockly\Mutator.cs" />
+    <Compile Include="Blockly\Icon.cs" />
+    <Compile Include="Blockly\Inject.cs" />
+    <Compile Include="Blockly\FlyoutButton.cs" />
+    <Compile Include="Blockly\Fields\FieldImage.cs" />
+    <Compile Include="Blockly\ContextMenu.cs" />
+    <Compile Include="Blockly\Bubble.cs" />
+    <Compile Include="Blockly\WidgetDiv.cs" />
+    <Compile Include="Blockly\Touch.cs" />
+    <Compile Include="Blockly\RenderedConnection.cs" />
+    <Compile Include="Closure\Listener.cs" />
+    <Compile Include="HtmlToClrEventProxy.cs" />
+    <Compile Include="Closure\FocusHandler.cs" />
+    <Compile Include="Closure\BrowserEvent.cs" />
+    <Compile Include="Closure\KeyHandler.cs" />
+    <Compile Include="Blockly\Variables.cs" />
+    <Compile Include="Closure\i18n.cs" />
+    <Compile Include="BlocklyMruby\MrbAstNodes.cs" />
+    <Compile Include="BlocklyMruby\SwitchCaseBlock.cs" />
+    <Compile Include="Closure\Event.cs" />
+    <Compile Include="Closure\ListenerMap.cs" />
+    <Compile Include="Closure\TypeAhead.cs" />
+    <Compile Include="Closure\BaseNode.cs" />
+    <Compile Include="Closure\TreeControl.cs" />
+    <Compile Include="Closure\EventHandler.cs" />
+    <Compile Include="Closure\ColorPicker.cs" />
+    <Compile Include="Blockly\Blockly.cs" />
+    <Compile Include="Closure\Palette.cs" />
+    <Compile Include="Closure\SafeStyle.cs" />
+    <Compile Include="Closure\SafeUrl.cs" />
+    <Compile Include="Blockly\Names.cs" />
+    <Compile Include="Blockly\Css.cs" />
+    <Compile Include="Closure\SafeHtml.cs" />
+    <Compile Include="ResourceReader.cs" />
+    <Compile Include="Blockly\Warning.cs" />
+    <Compile Include="Closure\SelectionModel.cs" />
+    <Compile Include="Closure\a11y.cs" />
+    <Compile Include="Closure\DatePickerRenderer.cs" />
+    <Compile Include="Closure\TrustedResourceUrl.cs" />
+    <EmbeddedResource Include="MainForm.resx">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="favicon.ico" />
+    <Content Include="Resources\Toolbox.xml" />
+    <Content Include="Resources\Canvas.html" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
