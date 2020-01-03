@@ -470,15 +470,15 @@ namespace BlockFactoryApp
 				var id = idArray[i];
 				var element = (HTMLElement)Document.GetElementById(id);
 				if (enabled) {
-					element.ClassList.Remove("disabled");
+					goog.dom.classlist.remove(element, "disabled");
 				}
 				else {
-					element.ClassList.Add("disabled");
+					goog.dom.classlist.add(element, "disabled");
 				}
 				var fields = element.QuerySelectorAll("input, textarea, select");
 				for (var j = 0; j < fields.Length; j++) {
 					var field = fields[j];
-					var pi = field.GetType().GetProperty("Disabled", System.Reflection.BindingFlags.Public);
+					var pi = field.GetType().GetProperty("Disabled", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
 					pi.SetValue(field, !enabled);
 				}
 			}
