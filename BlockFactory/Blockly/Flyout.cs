@@ -626,8 +626,7 @@ namespace Blockly
 			var gaps = new JsArray<double>();
 			this.permanentlyDisabled_.Clear();
 			foreach (var xml_ in xmlList) {
-				var xml = (Element)xml_;
-				if (xml.TagName != null) {
+				if (xml_ is Element xml) {
 					var tagName = xml.TagName.ToUpperCase();
 					var default_gap = this.horizontalLayout_ ? this.GAP_X : this.GAP_Y;
 					if (tagName == "BLOCK") {
