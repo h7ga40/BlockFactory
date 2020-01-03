@@ -378,7 +378,7 @@ namespace BlockFactoryApp
 		{
 			Document.GetElementById("tab_preload").ClassName = mode ==
 				WorkspaceFactoryController.MODE_PRELOAD ? "tabon" : "taboff";
-			((HTMLDivElement)Document.GetElementById("preload_div")).Style.Display = mode ==
+			((HTMLElement)Document.GetElementById("preload_div")).Style.Display = mode ==
 				WorkspaceFactoryController.MODE_PRELOAD ? Display.Block : Display.None;
 			Document.GetElementById("tab_toolbox").ClassName = mode ==
 				WorkspaceFactoryController.MODE_TOOLBOX ? "tabon" : "taboff";
