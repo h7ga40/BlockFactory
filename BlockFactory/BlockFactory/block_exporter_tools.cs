@@ -171,8 +171,23 @@ namespace BlockFactoryApp
 		/// <param name="blockXmlMap"> Map of block type to XML.</param>
 		public void addBlockDefinitions(Dictionary<string, Element> blockXmlMap)
 		{
-			var blockDefs = this.getBlockDefinitions(blockXmlMap, "JavaScript");
-			Script.Eval(blockDefs);
+			//var blockDefs = this.getBlockDefinitions(blockXmlMap, "JavaScript");
+			//Script.Eval(blockDefs);
+			var definitionFormat = "JSON";
+			foreach (var blockXml in blockXmlMap) {
+				var xml = blockXml.Value;
+				if (xml == null)
+					continue;
+
+				var rootBlock = this.getRootBlockFromXml_(xml);
+				if (rootBlock != null) {
+					// Generate the block's definition.
+					var code = FactoryUtils.getBlockDefinition(blockXml.Key, rootBlock,
+						definitionFormat, this.hiddenWorkspace);
+					// Add block's definition to the definitions to return.
+					Blockly.Core.Blocks[blockXml.Key] = code;
+				}
+			}
 		}
 
 		/// <summary>
