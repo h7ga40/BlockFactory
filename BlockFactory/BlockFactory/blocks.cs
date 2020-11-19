@@ -1097,7 +1097,7 @@ namespace BlockFactoryApp
 			if (!Double.IsNaN(hue)) {
 				field.sourceBlock_.setColour((int)hue);
 			}
-			return null;
+			return hue;
 		}
 
 		public override Element mutationToDom()
